@@ -1,0 +1,14 @@
+{
+    "domain": "bluetooth_tracker",
+    "name": "\u84DD\u7259\u68C0\u6D4B",
+    "version": "1.0",
+    "config_flow": true,
+    "documentation": "https://github.com/shaonianzhentan/bluetooth_tracker",
+    "requirements": [
+        "pybluez==0.22"
+    ],
+    "codeowners": [
+        "@shaonianzhentan"
+    ],
+    "iot_class": "local_polling"
+}

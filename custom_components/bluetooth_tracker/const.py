@@ -1,0 +1,1 @@
+DOMAIN = "bluetooth_tracker"

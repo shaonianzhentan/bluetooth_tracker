@@ -1,0 +1,18 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "蓝牙检测",
+                "description": "项目: https://github.com/shaonianzhentan/bluetooth_tracker",
+                "data": {
+                    "ip": "设备IP地址",
+                    "mac": "设备蓝牙MAC地址"
+                }
+            }
+        },
+        "error": {},
+        "abort": {
+            "single_instance_allowed": "仅允许单个配置."
+        }
+    }
+}
