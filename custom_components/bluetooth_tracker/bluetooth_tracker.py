@@ -46,6 +46,11 @@ class BluetoothTracker():
                 "-W1",
                 self._ip_address,
             ]
+        # 检测蓝牙设备
+        val = os.system('hciconfig name')
+        # 支持蓝牙设备（val=256表示未找到）
+        self.support_ble = val == 0
+        # 定时器
         self.remove_listener = async_track_time_interval(hass, self.async_update, TIME_BETWEEN_UPDATES)
 
     async def async_ping(self):
@@ -114,24 +119,30 @@ class BluetoothTracker():
         except AttributeError:
             return False
 
+    # 设置状态
+    def set_state(self, state_value):
+        hass = self.hass
+        entity_id = self.entity_id
+        state = hass.states.get(entity_id)
+        if state is not None and state.state != state_value:
+            hass.states.async_set(entity_id, state_value, attributes=state.attributes)
+        
     async def async_update(self, now) -> None:
         # print(now)
         self.data = await self.async_ping()
         self.is_alive = bool(self.data)
-        hass = self.hass
-        entity_id = self.entity_id
         if self.is_alive:
             self.error_count = 0
-            state = hass.states.get(entity_id)
-            if state is not None and state.state != 'home':
-                hass.states.async_set(entity_id, 'home', attributes=state.attributes)
+            self.set_state('home')
         else:
             # 错误5次，则设置为不在家
             self.error_count = self.error_count + 1
             if self.error_count > 5:
                 self.error_count = 0
-                # 设置为不在家
-                state = hass.states.get(entity_id)
-                if state is not None and state.state != 'not_home':
-                    hass.states.async_set(entity_id, 'not_home', attributes=state.attributes)
-
+                self.set_state('not_home')
+            # 蓝牙检测
+            if self.support_ble:
+                import bluetooth
+                ble_name = bluetooth.lookup_name(self.mac)
+                if ble_name is not None:
+                    self.set_state('home')

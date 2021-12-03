@@ -5,9 +5,9 @@
                 "title": "蓝牙检测",
                 "description": "项目: https://github.com/shaonianzhentan/bluetooth_tracker",
                 "data": {
-                    "person": "人员",
-                    "ip": "设备IP地址",
-                    "mac": "设备蓝牙MAC地址"
+                    "person": "手机主人",
+                    "ip": "手机IP地址",
+                    "mac": "手机蓝牙MAC地址"
                 }
             }
         },
