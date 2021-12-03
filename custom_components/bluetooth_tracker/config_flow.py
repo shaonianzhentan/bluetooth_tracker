@@ -32,17 +32,17 @@ class SimpleConfigFlow(ConfigFlow, domain=DOMAIN):
                     attributes = state.attributes
                     entity_id = state.entity_id
                     friendly_name = attributes.get('friendly_name')
-                    if friendly_name is not None:
+                    if friendly_name is not None and f'{DOMAIN}{entity_id}' not in self.hass.data:
                         entity_list[entity_id] = friendly_name
 
             DATA_SCHEMA = vol.Schema({
                 vol.Required("ip"): str,
-                vol.Required("mac"): str,                
+                vol.Required("mac"): str,
                 vol.Required("person", default=[]): vol.In(entity_list)
             })
             return self.async_show_form(step_id="user", data_schema=DATA_SCHEMA, errors=errors)
 
-        return self.async_create_entry(title=user_input['ip'], data=user_input)
+        return self.async_create_entry(title=f"{user_input['person']}({user_input['ip']})", data=user_input)
 
     @staticmethod
     @callback
