@@ -27,6 +27,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     cfg = entry.data
     person = cfg.get('person')
     key = f'{DOMAIN}{person}'
-    hass.data[key].remove_listener()
-    hass.data.pop(key)
+    if key in hass.data:
+        hass.data[key].remove_listener()
+        hass.data.pop(key)
     return True
