@@ -9,11 +9,18 @@ CONFIG_SCHEMA = cv.deprecated(DOMAIN)
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     print('async_setup_entry', entry.data)
     cfg = entry.data
-    host = cfg.get('ip')
-    mac = cfg.get('mac')
+    options = entry.options
     person = cfg.get('person')
-    hass.data[f'{DOMAIN}{person}'] = BluetoothTracker(hass, host, mac, person)
+    host = options.get('ip')
+    mac = options.get('mac')
+    if host is not None and mac is not None:
+        hass.data[f'{DOMAIN}{person}'] = BluetoothTracker(hass, host, mac, person)
     return True
+
+async def update_listener(hass, entry):
+    """Handle options update."""
+    await async_unload_entry(hass, entry)
+    await async_setup_entry(hass, entry)
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     print('async_unload_entry', entry.data)

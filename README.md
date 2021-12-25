@@ -9,7 +9,10 @@
 
 安装对应依赖
 ```bash
-sudo apt-get install bluetooth libbluetooth-dev pkg-config libboost-python-dev libboost-thread-dev libglib2.0-dev python-dev
+sudo apt-get install bluetooth libbluetooth-dev pkg-config libboost-python-dev libboost-thread-dev libglib2.0-dev python-dev -y
+```
+```bash
+pip install pybluez
 ```
 
 安装完成重启HA，刷新一下页面，在集成里搜索`蓝牙检测`即可

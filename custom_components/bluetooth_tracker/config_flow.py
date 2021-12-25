@@ -10,11 +10,6 @@ from homeassistant.config_entries import ConfigFlow, OptionsFlow, ConfigEntry
 
 from .const import DOMAIN
 
-DATA_SCHEMA = vol.Schema({
-    vol.Required("ip"): str,
-    vol.Required("mac"): str
-})
-
 class SimpleConfigFlow(ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
@@ -36,13 +31,11 @@ class SimpleConfigFlow(ConfigFlow, domain=DOMAIN):
                         entity_list[entity_id] = friendly_name
 
             DATA_SCHEMA = vol.Schema({
-                vol.Required("ip"): str,
-                vol.Required("mac"): str,
                 vol.Required("person", default=[]): vol.In(entity_list)
             })
             return self.async_show_form(step_id="user", data_schema=DATA_SCHEMA, errors=errors)
 
-        return self.async_create_entry(title=f"{user_input['person']}({user_input['ip']})", data=user_input)
+        return self.async_create_entry(title=user_input['person'], data=user_input)
 
     @staticmethod
     @callback
@@ -59,7 +52,12 @@ class OptionsFlowHandler(OptionsFlow):
     async def async_step_user(self, user_input=None):
         errors = {}
         if user_input is None:
+            options = self.config_entry.options
             errors = {}
+            DATA_SCHEMA = vol.Schema({
+                vol.Required("ip", default=options.get('ip', '')): str,
+                vol.Required("mac", default=options.get('mac', '')): str
+            })
             return self.async_show_form(step_id="user", data_schema=DATA_SCHEMA, errors=errors)
         # 选项更新
-        return self.async_create_entry(title=user_input['ip'], data={})
+        return self.async_create_entry(title='', data=user_input)
