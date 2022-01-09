@@ -2,6 +2,7 @@ import sys, asyncio, logging, re, datetime, os
 from contextlib import suppress
 from homeassistant.helpers.event import async_track_time_interval
 from .const import PING_TIMEOUT
+import copy
 
 _LOGGER = logging.getLogger(__name__)
 PING_MATCHER = re.compile(
@@ -125,7 +126,8 @@ class BluetoothTracker():
         entity_id = self.entity_id
         state = hass.states.get(entity_id)
         if state is not None and state.state != state_value:
-            hass.states.async_set(entity_id, state_value, attributes=state.attributes)
+            attributes = copy.copy(state.attributes)
+            hass.states.async_set(entity_id, state_value, attributes=attributes)
         
     async def async_update(self, now) -> None:
         # print(now)
