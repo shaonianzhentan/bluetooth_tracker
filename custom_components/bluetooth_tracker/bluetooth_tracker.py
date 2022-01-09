@@ -126,9 +126,11 @@ class BluetoothTracker():
         entity_id = self.entity_id
         state = hass.states.get(entity_id)
         if state is not None and state.state != state_value:
-            attributes = copy.copy(state.attributes)
-            hass.states.async_set(entity_id, state_value, attributes=attributes)
-        
+            try:
+                hass.states.async_set(entity_id, state_value, attributes=state.attributes)
+            except Exception as ex:
+                print(ex)
+                
     async def async_update(self, now) -> None:
         # print(now)
         self.data = await self.async_ping()
