@@ -106,11 +106,6 @@ class BluetoothTracker():
             rtt_min, rtt_avg, rtt_max, rtt_mdev = match.groups()
             return {"min": rtt_min, "avg": rtt_avg, "max": rtt_max, "mdev": rtt_mdev}
         except asyncio.TimeoutError:
-            _LOGGER.exception(
-                "Timed out running command: `%s`, after: %ss",
-                self._ping_cmd,
-                self._count + PING_TIMEOUT,
-            )
             if pinger:
                 with suppress(TypeError):
                     await pinger.kill()
@@ -143,7 +138,7 @@ class BluetoothTracker():
             self.error_count = self.error_count + 1
             if self.error_count > 5:
                 self.error_count = 0
-                self.set_state('not_home')
+                return self.set_state('not_home')
             # 蓝牙检测
             if self.support_ble:
                 import bluetooth

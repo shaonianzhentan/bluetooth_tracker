@@ -15,6 +15,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     mac = options.get('mac')
     if host is not None and mac is not None:
         hass.data[f'{DOMAIN}{person}'] = BluetoothTracker(hass, host, mac, person)
+    
+    entry.async_on_unload(entry.add_update_listener(update_listener))
     return True
 
 async def update_listener(hass, entry):
