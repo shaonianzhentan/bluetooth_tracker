@@ -127,21 +127,22 @@ class BluetoothTracker():
                 print(ex)
                 
     async def async_update(self, now) -> None:
-        # print(now)
+        # IP检测
         self.data = await self.async_ping()
         self.is_alive = bool(self.data)
         if self.is_alive:
             self.error_count = 0
             self.set_state('home')
         else:
-            # 错误5次，则设置为不在家
-            self.error_count = self.error_count + 1
-            if self.error_count > 5:
-                self.error_count = 0
-                return self.set_state('not_home')
             # 蓝牙检测
             if self.support_ble:
                 import bluetooth
                 ble_name = bluetooth.lookup_name(self.mac)
                 if ble_name is not None:
-                    self.set_state('home')
+                    self.error_count = 0
+                    return self.set_state('home')
+            # 错误5次，则设置为不在家
+            self.error_count = self.error_count + 1
+            if self.error_count > 5:
+                self.error_count = 0
+                self.set_state('not_home')
